@@ -1,1 +1,107 @@
 
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Jackpot MY 2026</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#090909;color:#fff;font-family:Arial,sans-serif}
+header{background:#111;padding:22px;text-align:center;border-bottom:2px solid #d6ad43}
+header h1{color:#e9bd52;margin:0;font-size:23px}
+header p{color:#aaa;margin:8px 0 0;font-size:12px}
+main{padding:16px;max-width:600px;margin:auto}
+.card{background:#171717;border:1px solid #343434;border-radius:14px;padding:18px;margin-bottom:15px}
+label{display:block;color:#d9b44a;margin-bottom:8px;font-size:14px}
+select,input{width:100%;padding:13px;background:#252525;color:white;border:1px solid #444;border-radius:9px;margin-bottom:15px;font-size:16px}
+button{border:0;border-radius:9px;padding:13px;font-weight:bold;cursor:pointer}
+.gold{background:#d8b247;color:#111;width:100%;font-size:17px}
+.small{background:#333;color:#e8bd50;margin:4px}
+.numbers{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.ball{background:#d9b348;color:#111;width:43px;height:43px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:15px}
+.result{background:#101010;border:1px solid #393939;border-radius:10px;padding:12px;margin:10px 0}
+h3{color:#e4bb4d}
+footer{text-align:center;color:#777;font-size:11px;padding:20px}
+</style>
+</head>
+<body>
+<header>
+<h1>🎰 JACKPOT MY 2026</h1>
+<p>RANDOM NUMBER GENERATOR • MALAYSIA</p>
+</header>
+<main>
+<div class="card">
+<label>🎯 PILIH PERMAINAN</label>
+<select id="game">
+<option value="58">SPORT TOTO 6/58</option>
+<option value="55">SPORT TOTO 6/55</option>
+<option value="4">MAGNUM 4D</option>
+<option value="6">MAGNUM 6D JACKPOT</option>
+</select>
+<label>📦 JUMLAH SET</label>
+<select id="qty">
+<option>5</option><option>10</option><option>20</option><option>50</option>
+</select>
+<button class="gold" onclick="generate()">✨ JANA NOMBOR</button>
+</div>
+<div class="card">
+<h3>🎲 NOMBOR RANDOM</h3>
+<div id="output">Tekan JANA NOMBOR untuk bermula.</div>
+<button class="small" onclick="copyAll()">📋 COPY SEMUA</button>
+<button class="small" onclick="saveFav()">⭐ SIMPAN FAVORITE</button>
+<button class="small" onclick="showFav()">❤️ FAVORITE</button>
+<button class="small" onclick="showHistory()">🕘 SEJARAH</button>
+</div>
+<div class="card"><h3>⭐ FAVORITE</h3><div id="fav">Belum ada favorite.</div></div>
+<div class="card"><h3>🕘 SEJARAH</h3><div id="history">Belum ada sejarah.</div></div>
+</main>
+<footer>Untuk hiburan sahaja • Nombor dijana secara rawak<br>Tiada jaminan kemenangan</footer>
+<script>
+let latest=[];
+function randomNum(max){return Math.floor(Math.random()*max)+1}
+function generate(){
+let g=document.getElementById('game').value;
+let qty=+document.getElementById('qty').value;
+latest=[];
+let html='';
+for(let i=0;i<qty;i++){
+let nums=[];
+if(g==='4'||g==='6'){
+let n='';for(let j=0;j<+g;j++)n+=Math.floor(Math.random()*10);
+nums=[n];
+}else{
+while(nums.length<6){let n=randomNum(+g);if(!nums.includes(n))nums.push(n)}
+nums.sort((a,b)=>a-b);
+}
+latest.push(nums);
+html+='<div class="result"><b>SET '+(i+1)+'</b><div class="numbers">'+nums.map(n=>'<span class="ball">'+String(n).padStart(g==='4'||g==='6'?+g:2,'0')+'</span>').join('')+'</div></div>';
+}
+document.getElementById('output').innerHTML=html;
+let h=JSON.parse(localStorage.history||'[]');
+h.unshift({game:g,sets:latest,date:new Date().toLocaleString()});
+localStorage.history=JSON.stringify(h.slice(0,30));
+}
+function copyAll(){
+let t=latest.map((a,i)=>'Set '+(i+1)+': '+a.join(' - ')).join('\n');
+if(!t)return alert('Jana nombor dahulu');
+navigator.clipboard?.writeText(t).then(()=>alert('Nombor disalin!')).catch(()=>alert(t));
+}
+function saveFav(){
+if(!latest.length)return alert('Jana nombor dahulu');
+let f=JSON.parse(localStorage.fav||'[]');f.unshift(latest);
+localStorage.fav=JSON.stringify(f);alert('Favorite disimpan!');
+}
+function showFav(){
+let f=JSON.parse(localStorage.fav||'[]');
+document.getElementById('fav').innerHTML=f.length?f.map((x,i)=>'<p>Favorite '+(i+1)+': '+x.map(a=>a.join('-')).join(' / ')+'</p>').join(''):'Belum ada favorite.';
+}
+function showHistory(){
+let h=JSON.parse(localStorage.history||'[]');
+document.getElementById('history').innerHTML=h.length?h.map(x=>'<p>'+x.date+'<br>'+x.sets.map(a=>a.join('-')).join(' / ')+'</p>').join(''):'Belum ada sejarah.';
+}
+showFav();showHistory();
+</script>
+</body>
+</html>
+
