@@ -1,7 +1,7 @@
 
 name: Build Jackpot APK
 
-on: [workflow_dispatch, push]
+on: [push, workflow_dispatch]
 
 jobs:
   build:
@@ -17,7 +17,7 @@ jobs:
 
       - uses: android-actions/setup-android@v3
         with:
-    packages: platform-tools
+          packages: platform-tools
 
       - uses: gradle/actions/setup-gradle@v4
         with:
